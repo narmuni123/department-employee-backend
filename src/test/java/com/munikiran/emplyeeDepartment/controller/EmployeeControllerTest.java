@@ -1,5 +1,6 @@
 package com.munikiran.emplyeeDepartment.controller;
 
+import com.munikiran.emplyeeDepartment.common.ApiRequest;
 import com.munikiran.emplyeeDepartment.common.ApiResponse;
 import com.munikiran.emplyeeDepartment.common.constants.SuccessMessages;
 import com.munikiran.emplyeeDepartment.entity.Employee;
@@ -49,12 +50,18 @@ class EmployeeControllerTest {
         inputEmployee.setPosition("Developer");
         inputEmployee.setSalary(75000.0);
 
+        ApiRequest<Employee> request = ApiRequest.<Employee>builder()
+                .requestId("req-123")
+                .source("test")
+                .payload(inputEmployee)
+                .build();
+
         when(employeeService.addEmployee(eq(departmentId), any(Employee.class)))
                 .thenReturn(testEmployee);
 
         // Act
         ResponseEntity<ApiResponse<Employee>> response = 
-                employeeController.addEmployee(departmentId, inputEmployee);
+                employeeController.addEmployee(departmentId, request);
 
         // Assert
         assertNotNull(response);
@@ -80,12 +87,18 @@ class EmployeeControllerTest {
         String departmentId = "dept-1";
         Employee inputEmployee = new Employee();
         
+        ApiRequest<Employee> request = ApiRequest.<Employee>builder()
+                .requestId("req-456")
+                .source("test")
+                .payload(inputEmployee)
+                .build();
+        
         when(employeeService.addEmployee(eq(departmentId), any(Employee.class)))
                 .thenReturn(testEmployee);
 
         // Act
         ResponseEntity<ApiResponse<Employee>> response = 
-                employeeController.addEmployee(departmentId, inputEmployee);
+                employeeController.addEmployee(departmentId, request);
 
         // Assert
         assertEquals(SuccessMessages.EMPLOYEE_CREATED, response.getBody().getMessage());
@@ -101,6 +114,12 @@ class EmployeeControllerTest {
         inputEmployee.setPosition("Manager");
         inputEmployee.setSalary(90000.0);
 
+        ApiRequest<Employee> request = ApiRequest.<Employee>builder()
+                .requestId("req-789")
+                .source("test")
+                .payload(inputEmployee)
+                .build();
+
         Employee savedEmployee = new Employee();
         savedEmployee.setId("emp-2");
         savedEmployee.setName("Jane Smith");
@@ -113,7 +132,7 @@ class EmployeeControllerTest {
 
         // Act
         ResponseEntity<ApiResponse<Employee>> response = 
-                employeeController.addEmployee(departmentId, inputEmployee);
+                employeeController.addEmployee(departmentId, request);
 
         // Assert
         Employee returnedEmployee = response.getBody().getData();

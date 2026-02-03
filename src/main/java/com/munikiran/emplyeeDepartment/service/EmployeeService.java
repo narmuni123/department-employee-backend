@@ -1,5 +1,6 @@
 package com.munikiran.emplyeeDepartment.service;
 
+import com.munikiran.emplyeeDepartment.common.constants.ErrorMessages;
 import com.munikiran.emplyeeDepartment.entity.Department;
 import com.munikiran.emplyeeDepartment.entity.Employee;
 import com.munikiran.emplyeeDepartment.exception.ResourceNotFoundException;
@@ -26,7 +27,7 @@ public class EmployeeService {
     @Transactional(readOnly = true)
     public List<Employee> getEmployeesByDepartment(String deptId) {
         if (!departmentRepo.existsById(deptId)) {
-            throw new ResourceNotFoundException("Department not found: " + deptId);
+            throw new ResourceNotFoundException(ErrorMessages.DEPARTMENT_NOT_FOUND + deptId);
         }
         return employeeRepo.findByDepartmentId(deptId);
     }
@@ -36,7 +37,7 @@ public class EmployeeService {
 
         Department dept = departmentRepo.findById(deptId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Department not found: " + deptId));
+                        new ResourceNotFoundException(ErrorMessages.DEPARTMENT_NOT_FOUND + deptId));
 
         employee.setDepartment(dept);
         dept.getEmployees().add(employee);
@@ -51,11 +52,11 @@ public class EmployeeService {
 
         Department dept = departmentRepo.findById(deptId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Department not found: " + deptId));
+                        new ResourceNotFoundException(ErrorMessages.DEPARTMENT_NOT_FOUND + deptId));
 
         Employee emp = employeeRepo.findById(empId)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Employee not found: " + empId));
+                        new ResourceNotFoundException(ErrorMessages.EMPLOYEE_NOT_FOUND + empId));
 
         dept.getEmployees().remove(emp);
         employeeRepo.delete(emp);

@@ -1,5 +1,6 @@
 package com.munikiran.emplyeeDepartment.controller;
 
+import com.munikiran.emplyeeDepartment.common.ApiRequest;
 import com.munikiran.emplyeeDepartment.common.ApiResponse;
 import com.munikiran.emplyeeDepartment.common.constants.SuccessMessages;
 import com.munikiran.emplyeeDepartment.dto.DepartmentDTO;
@@ -54,8 +55,9 @@ public class DepartmentController {
     }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<DepartmentDTO>> createDepartment(@RequestBody Department department) {
-        DepartmentDTO createdDepartment = departmentService.createDepartment(department);
+    public ResponseEntity<ApiResponse<DepartmentDTO>> createDepartment(
+            @RequestBody ApiRequest<Department> request) {
+        DepartmentDTO createdDepartment = departmentService.createDepartment(request.getPayload());
         ApiResponse<DepartmentDTO> response = ApiResponse.success(
             SuccessMessages.DEPARTMENT_CREATED,
             createdDepartment
@@ -66,8 +68,8 @@ public class DepartmentController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<DepartmentDTO>> updateDepartment(
             @PathVariable String id,
-            @RequestBody Department department) {
-        DepartmentDTO updatedDepartment = departmentService.updateDepartment(id, department);
+            @RequestBody ApiRequest<Department> request) {
+        DepartmentDTO updatedDepartment = departmentService.updateDepartment(id, request.getPayload());
         ApiResponse<DepartmentDTO> response = ApiResponse.success(
             SuccessMessages.DEPARTMENT_UPDATED,
             updatedDepartment

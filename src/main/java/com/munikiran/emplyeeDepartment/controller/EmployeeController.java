@@ -1,5 +1,6 @@
 package com.munikiran.emplyeeDepartment.controller;
 
+import com.munikiran.emplyeeDepartment.common.ApiRequest;
 import com.munikiran.emplyeeDepartment.common.ApiResponse;
 import com.munikiran.emplyeeDepartment.common.constants.SuccessMessages;
 import com.munikiran.emplyeeDepartment.entity.Employee;
@@ -31,9 +32,9 @@ public class EmployeeController {
     @PostMapping("/departments/{id}/employees")
     public ResponseEntity<ApiResponse<Employee>> addEmployee(
             @PathVariable String id,
-            @RequestBody Employee emp) {
+            @RequestBody ApiRequest<Employee> request) {
 
-        Employee employee = service.addEmployee(id, emp);
+        Employee employee = service.addEmployee(id, request.getPayload());
         ApiResponse<Employee> response = ApiResponse.success(
             SuccessMessages.EMPLOYEE_CREATED,
             employee
