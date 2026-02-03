@@ -1,8 +1,8 @@
 package com.munikiran.emplyeeDepartment.controller;
 
-import com.munikiran.emplyeeDepartment.entity.Department;
+import com.munikiran.emplyeeDepartment.common.ApiResponse;
+import com.munikiran.emplyeeDepartment.common.constants.SuccessMessages;
 import com.munikiran.emplyeeDepartment.entity.Employee;
-import com.munikiran.emplyeeDepartment.repository.DepartmentRepository;
 import com.munikiran.emplyeeDepartment.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,36 +17,42 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService service;
-    private final DepartmentRepository departmentRepo;
 
     @GetMapping("/employees")
-    public ResponseEntity<List<Employee>> getAllEmployees() {
-        return ResponseEntity.ok(service.getAllEmployees());
+    public ResponseEntity<ApiResponse<List<Employee>>> getAllEmployees() {
+        List<Employee> employees = service.getAllEmployees();
+        ApiResponse<List<Employee>> response = ApiResponse.success(
+            SuccessMessages.EMPLOYEES_RETRIEVED,
+            employees
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/departments/{id}/employees")
-    public ResponseEntity<Employee> addEmployee(
+    public ResponseEntity<ApiResponse<Employee>> addEmployee(
             @PathVariable String id,
             @RequestBody Employee emp) {
 
+        Employee employee = service.addEmployee(id, emp);
+        ApiResponse<Employee> response = ApiResponse.success(
+            SuccessMessages.EMPLOYEE_CREATED,
+            employee
+        );
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(service.addEmployee(id, emp));
+                .body(response);
     }
 
     @DeleteMapping("/departments/{deptId}/employees/{empId}")
-    public ResponseEntity<Void> deleteEmployee(
+    public ResponseEntity<ApiResponse<Void>> deleteEmployee(
             @PathVariable String deptId,
             @PathVariable String empId) {
 
         service.deleteEmployee(deptId, empId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/departments")
-    public ResponseEntity<Department> create(@RequestBody Department d) {
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(departmentRepo.save(d));
+        ApiResponse<Void> response = ApiResponse.success(
+            SuccessMessages.EMPLOYEE_DELETED,
+            null
+        );
+        return ResponseEntity.ok(response);
     }
 }

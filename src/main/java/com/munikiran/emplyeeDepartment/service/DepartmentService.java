@@ -58,4 +58,28 @@ public class DepartmentService {
         department.getEmployees()
                 .removeIf(emp -> emp.getId().equals(empId));
     }
+
+    public DepartmentDTO createDepartment(Department department) {
+        Department savedDepartment = departmentRepository.save(department);
+        return DepartmentMapper.toDTO(savedDepartment);
+    }
+
+    @Transactional
+    public DepartmentDTO updateDepartment(String id, Department department) {
+        Department existingDepartment = departmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Department not found with id: " + id));
+        
+        existingDepartment.setName(department.getName());
+        existingDepartment.setLocation(department.getLocation());
+        
+        Department updatedDepartment = departmentRepository.save(existingDepartment);
+        return DepartmentMapper.toDTO(updatedDepartment);
+    }
+
+    @Transactional
+    public void deleteDepartment(String id) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Department not found with id: " + id));
+        departmentRepository.delete(department);
+    }
 }

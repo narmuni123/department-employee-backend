@@ -1,9 +1,9 @@
 package com.munikiran.emplyeeDepartment.controller;
 
+import com.munikiran.emplyeeDepartment.common.ApiResponse;
+import com.munikiran.emplyeeDepartment.common.constants.SuccessMessages;
 import com.munikiran.emplyeeDepartment.service.report.DepartmentReportService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +15,15 @@ public class ReportController {
     private final DepartmentReportService reportService;
 
     @GetMapping("/departments/employees")
-    public ResponseEntity<byte[]> downloadDepartmentEmployeeReport() {
+    public ResponseEntity<ApiResponse<byte[]>> downloadDepartmentEmployeeReport() {
 
         byte[] pdf = reportService.generateDepartmentEmployeeReport();
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=department-employees.pdf")
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(pdf);
+        
+        ApiResponse<byte[]> response = ApiResponse.success(
+            SuccessMessages.REPORT_GENERATED,
+            pdf
+        );
+        
+        return ResponseEntity.ok(response);
     }
 }
